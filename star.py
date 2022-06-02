@@ -6,6 +6,8 @@ import pandas as pd
 raw = pd.read_csv("./star.csv")
 star = raw[raw['star_level'] != -1]
 star_test = raw[raw['star_level'] == -1]
+uid_star_raw = pd.read_csv("./uid_star.csv")
+uid_list = (uid_star_raw[uid_star_raw['star_level'] == -1])['uid'].values
 
 star_data = star[['sa_bal', 'td_bal', 'fin_bal']].values
 star_target = star['star_level'].values
@@ -19,5 +21,8 @@ clf = tree.DecisionTreeClassifier()
 clf.fit(Xtrain, Ytrain)               #拟合
 score = clf.score(Xtest, Ytest)         #模型评分
 prediction = clf.predict(star_test[['sa_bal', 'td_bal', 'fin_bal']].values)
+result = list(zip(uid_list, prediction))
+result = pd.DataFrame(result, columns=['uid', 'star'])
 print(score)
-print(prediction)
+print(result)
+result.to_csv("18_star.csv")
